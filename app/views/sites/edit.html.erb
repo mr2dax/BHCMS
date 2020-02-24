@@ -1,0 +1,8 @@
+<h1 class="site_edit_label">BHCMSLABEL.site_edit_label</h1>
+
+
+<div id="sitelogo"><img src="<%= "/sitelogos/"+@site.id.to_s+"."+@site.logo %>" ></img></div>
+
+<%= render 'form' %>
+
+<%= link_to 'Back', admin_path , :class => 'classname Back_button'%>

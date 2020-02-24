@@ -1,0 +1,31 @@
+<%= form_for(@template) do |f| %>
+  <% if @template.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= @template.errors.count %>
+      	<span class="temp_creation_error_label">BHCMSLABEL.temp_creation_error_label</span></h2>
+
+      <ul>
+      <% @template.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <span class="temp_desc_label">BHCMSLABEL.temp_desc_label</span><br />
+    <%= f.text_field :description %>
+  </div>
+  <div class="field">
+	<%= if @action != "edit"
+			f.label :temp_file
+			tag("br")
+		end%>
+	<%= if @action != "edit"
+			f.file_field :temp_file 
+		end%>
+	</div>
+  <div class="actions">
+    <button class="classname Tempsubmit_button" type="submit">Update </button>
+  </div>
+<% end %>

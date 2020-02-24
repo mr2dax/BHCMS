@@ -1,0 +1,9 @@
+<center><h1 class="respass_respass_label">BHCMSLABEL.respass_respass_label</h1>
+<%= form_tag password_resets_path, :method => :post do %>
+  <div class="field" align="center">
+    <span class="respass_resusername_label">BHCMSLABEL.respass_resusername_label</span>
+    <%= text_field_tag :username %>    
+    <span class="respass_resemail_label">BHCMSLABEL.respass_resemail_label</span>
+    <%= text_field_tag :email %> <button class="classname Respassrespasssubmit_button" type="submit">Submit </button>   
+  </div>
+<% end %>

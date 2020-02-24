@@ -1,0 +1,63 @@
+@font-face
+{
+font-family: BlackRose;
+src: url('/assets/fontFaces/blackRose/blackRose.ttf'),
+ url('/assets/fontFaces/blackRose/blackRose.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: Pacifico;
+ 	src: url('/assets/fontFaces/pacifico/pacifico.ttf'),
+ url('/assets/fontFaces/pacifico/pacifico.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: OswaldBold;
+ 	src: url('/assets/fontFaces/Oswald/OswaldBold.ttf'),
+ url('/assets/fontFaces/pacifico/OswaldBold.eot'); /* IE9+ */
+}
+
+@font-face {
+ font-family: OswaldLight;
+ 	src: url('/assets/fontFaces/Oswald/OswaldLight.ttf'),
+ url('/assets/fontFaces/pacifico/OswaldLight.eot'); /* IE9+ */
+}
+
+@font-face {
+ font-family: NewRocker;
+ 	src: url('/assets/fontFaces/NewRocker/NewRocker.ttf'),
+ url('/assets/fontFaces/NewRocker/NewRocker.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: Electrolize;
+ 	src: url('/assets/fontFaces/Electrolize/Electrolize.ttf'),
+ url('/assets/fontFaces/Electrolize/Electrolize.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: Arbutus;
+ 	src: url('/assets/fontFaces/Arbutus/Arbutus.ttf'),
+ url('/assets/fontFaces/Arbutus/Arbutus.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: PressStart;
+ 	src: url('/assets/fontFaces/PressStart/PressStart.ttf'),
+ url('/assets/fontFaces/PressStart/PressStart.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: GochiHand;
+ 	src: url('/assets/fontFaces/GochiHand/GochiHand.ttf'),
+ url('/assets/fontFaces/GochiHand/GochiHand.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: Rye;
+ 	src: url('/assets/fontFaces/Rye/Rye.ttf'),
+ url('/assets/fontFaces/Rye/Rye.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: SpecialElite;
+ 	src: url('/assets/fontFaces/SpecialElite/SpecialElite.ttf'),
+ url('/assets/fontFaces/SpecialElite/SpecialElite.eot'); /* IE9+ */
+}
+@font-face {
+ font-family: JustMeAgainDownHere;
+ 	src: url('/assets/fontFaces/JustMeAgainDownHere/JustMeAgainDownHere.ttf'),
+ url('/assets/fontFaces/JustMeAgainDownHere/JustMeAgainDownHere.eot'); /* IE9+ */
+}

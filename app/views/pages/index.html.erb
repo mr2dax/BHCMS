@@ -1,0 +1,35 @@
+<h1>Listing pages</h1>
+
+<table>
+  <tr>
+    <th>Site</th>
+    <th>Page</th>
+    <th>Template</th>
+    <th>Page name</th>
+    <th>Text size</th>
+    <th>Text font</th>
+    <th>Language</th>
+    <th>Exp page</th>
+    <th>Theme</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @pages.each do |page| %>
+  <tr>
+    <td><%= page.site_id %></td>
+    <td><%= page.template_id %></td>
+    <td><%= page.page_name %></td>
+    <td><%= page.language %></td>
+    <td><%= page.theme_id %></td>
+    <td><%= link_to 'Show', page %></td>
+    <td><%= link_to 'Edit', edit_page_path(page) %></td>
+    <td><%= link_to 'Destroy', page, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Page', new_page_path %>

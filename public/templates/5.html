@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope="" itemtype="http://schema.org/">
+<head>
+
+<link rel="stylesheet" type="text/css" href="/stylesheets/fontFaces.css" media="screen"  />
+<script class="original" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script class="original" language="JavaScript" type="text/javascript" src="/assets/ContentFlow/contentflow.js"></script>
+
+<script class="original" type="text/javascript">
+ onload = function()
+ {
+  var NrOfButtons = $("#buttonDiv").children().length;
+  var PercentSize = (80/NrOfButtons);    
+  $(".buttonDiv_item").css("width", PercentSize+"%");
+ }
+</script>
+<style type="text/css">
+html {
+	overflow-x: hidden;
+}
+body {
+	background-color: #E6E6FA;
+	color: #FFF;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	
+}
+
+button {
+	 font-weight: bold;
+	 background-color: white;
+	 color: green;
+	 margin: 0;
+	 padding-top: 6px;
+	 padding-bottom: 6px;
+	 width:100%; 
+	 }
+div
+{
+	 margin: 0;
+	padding: 0; 
+}
+.buttonDiv_item
+{
+	display: inline-block;
+}
+</style>
+
+</head>
+<body>
+	
+<div id="container"  style="width:100%;height:100%;position:absolute;color: green;">
+
+<div id="TitleContainter" class="editable appendable" style="width:100%;">
+<div id="TitleContainterChild1" class="editable TitleContainter_item">
+<img id="TitleContainterChild1_TitleImage"  class="editable" src="/images/defaultImage.png" style="width:40%;" >
+</div></div>
+
+<div id="WelcomeMessageContainer" class="editable appendable" style="width:100%;">
+<div id="WelcomeMessageContainerChild1" class="editable WelcomeMessageContainer_item">
+<h1 id="WelcomeMessageContainerChild1_WelcomeMessage" class="editable ">Title to edit</h1>
+</div></div>
+
+<div id="buttonDiv" class="editable appendable" style="width:100%;">
+<div id="buttonDivChild1" class="editable buttonDiv_item">	
+<button id="buttonDivChild1_Button1" class="editable" >Button1</button>
+</div>
+<div id="buttonDivChild2" class="editable buttonDiv_item">	
+<button id="buttonDivChild2_Button2" class="editable" >Button2</button>
+</div>
+<div id="buttonDivChild3" class="editable buttonDiv_item">	
+<button id="buttonDivChild3_Button3" class="editable" >Button1</button>
+</div>
+<div id="buttonDivChild4" class="editable buttonDiv_item">	
+<button id="buttonDivChild4_Button4" class="editable" >Button2</button>
+</div>
+</div>
+
+ <div id="contentFlow" class="ContentFlow" >
+        <!-- should be place before flow so that contained images will be loaded first -->
+        <div class="loadIndicator"><div class="indicator"></div></div>
+
+        <div id="flowItems" class="flow editable appendable">
+
+            <div id="Container1" class="item editable flowItems_item">
+                <img id="Container1_Image" class="content editable" src="/images/defaultImage.png"/>
+                <span id="Container1_Caption" class="caption editable">Caption</span>
+            </div>
+            <div id="Container2" class="item editable flowItems_item">
+                <img id="Container2_Image" class="content editable" src="/images/defaultImage.png"/>
+                <span id="Container2_Caption" class="caption editable">Caption</span>
+            </div>
+            <div id="Container3" class="item editable flowItems_item">
+                <img id="Container3_Image" class="content editable" src="/images/defaultImage.png"/>
+                <span id="Container3_Caption" class="caption editable">Caption</span>
+            </div>
+               <div id="Container4" class="item editable flowItems_item">
+                <img id="Container4_Image" class="content editable" src="/images/defaultImage.png"/>
+                <span id="Container4_Caption" class="caption editable">Caption</span>
+            </div>
+            <div id="Container5" class="item editable flowItems_item">
+                <img id="Container5_Image" class="content editable" src="/images/defaultImage.png"/>
+                <span id="Container5_Caption" class="caption editable">Caption</span>
+            </div>
+            <div id="Container6" class="item editable flowItems_item">
+                <img id="Container6_Image" class="content editable" src="/images/defaultImage.png"/>
+                <span id="Container6_Caption" class="caption editable">Caption</span>
+            </div>
+            
+        </div>
+        <div class="globalCaption"></div>
+        <div class="scrollbar">
+            <div class="slider"><div class="position"></div></div>
+        </div>
+
+</div>
+</div>
+</body>
+</html>

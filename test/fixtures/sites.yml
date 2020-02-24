@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  vendor_id: 1
+  landing_page_id: 1
+  site_name: MyString
+  site_type: MyString
+  address: MyString
+  telephone: MyString
+  latitude: 9.99
+  longitude: 9.99
+  logo: MyString
+  description: MyText
+
+two:
+  vendor_id: 1
+  landing_page_id: 1
+  site_name: MyString
+  site_type: MyString
+  address: MyString
+  telephone: MyString
+  latitude: 9.99
+  longitude: 9.99
+  logo: MyString
+  description: MyText

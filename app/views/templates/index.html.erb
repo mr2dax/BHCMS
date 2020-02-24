@@ -1,0 +1,31 @@
+<h1 class="temp_index_label">BHCMSLABEL.temp_index_label</h1>
+
+<table>
+  <tr>
+    <th><span class="temp_desc_label">BHCMSLABEL.temp_desc_label</span></th>
+    <th><span class="temp_filepath_label">BHCMSLABEL.temp_filepath_label</span></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @templates.each do |template| %>
+  <tr>
+  	<td><%= template.description %></td>
+    <td><%= template.file_path.split('.')[0] + ".html" %></td>
+    <td><%= link_to 'Show', template, :class => 'classname Showtemp_button' %></td>
+    <td><%= # show edit and destroy functions only if user templates
+    		if template.vendor_id != 0
+    			link_to 'Edit', edit_template_path(template), :class => 'classname Edittemp_button'
+    		end %></td>
+    <td><%= if template.vendor_id != 0
+    			link_to 'Destroy', template, confirm: 'Are you sure?', method: :delete, :class => 'classname Destroytemp_button'
+    		end %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Template', new_template_path, :class => 'classname Newtemp_button' %>
+<%= link_to 'Back', admin_path, :class => 'classname Back_button' %>
+

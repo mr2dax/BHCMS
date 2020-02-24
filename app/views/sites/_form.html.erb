@@ -1,0 +1,78 @@
+<%= form_for(@site) do |f| %>
+  <% if @site.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= @site.errors.count %>
+		<span class="vendor_creation_error_label">BHCMSLABEL.site_creation_error_label</span></h2>
+
+      <ul>
+      <% @site.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  
+   
+ 
+  <div class="field">
+    <span class="site_name_label">BHCMSLABEL.site_name_label</span>
+			<br />
+    <%= f.text_field :site_name %>
+  </div>
+  
+  <div class="field">
+    <span class="site_desc_label">BHCMSLABEL.site_desc_label</span><br />
+    <%= f.text_area :description , :rows => "4"%>
+  </div>
+  
+  <div class="field">
+    <span class="site_lat_label">BHCMSLABEL.site_lat_label</span><br />
+    <%= f.text_field :latitude , :id => 'mapLatitude', :onchange => ("setNewCoordinates()")  %>
+  </div>
+  
+  <div class="field">
+    <span class="site_lon_label">BHCMSLABEL.site_lon_label</span><br />
+    <%= f.text_field :longitude, :id => 'mapLongitude', :onchange => ("setNewCoordinates()") %>
+  </div>
+  
+  <div class="field">
+  <span class="site_type_label">BHCMSLABEL.site_type_label</span><br />
+  <%= f.select("site_type", Bhcms::Application::SITE_CAT.collect {|p| [ p[1], p[0] ] }) %>
+  </div>
+  
+	<div>
+          <%= f.hidden_field :logo, size: 40, :value => "/sitelogos/logo.jpg" 
+		#"/sitelogos/"+@site.id.to_s+".jpg" 
+		%>
+	</div>
+	<div>
+		<span class="site_logo_label">BHCMSLABEL.site_logo_label</span>
+		<br/>
+		<%= f.file_field :site_logo %>
+	</div>
+	
+  <div class="field">
+  <span class="site_address_label">BHCMSLABEL.site_address_label</span><br />
+  <%= f.text_field :address %>
+  </div>
+  
+ 
+  <div class="field">
+    <span class="site_telephone_label">BHCMSLABEL.site_telephone_label</span><br />
+    <%= f.text_field :telephone %>
+  </div>
+  
+  <div class="field">
+    <span class="site_landingpage_label">BHCMSLABEL.site_landingpage_label</span><br />
+    <%= f.select("landing_page_id", Page.find_all_by_site_id(@site[:id]).collect {|p| [ p.page_name, p.id ] }, {:include_blank => 'Please select a page'}) %>
+  </div>
+  
+  
+<button class="classname Siteupdate_button" type="submit">Update </button>   
+
+<div id="mapDiv" style="height: 300px; width: 300px;"></div>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false&amp;key=AIzaSyD3VSb2IYSKdPdcDWFffqh0pGy9S47Klzk"></script>
+<script type="text/javascript" src="/javascripts/sitesCoordinates.js"> </script>
+  
+<% end %>

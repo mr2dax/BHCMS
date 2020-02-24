@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<head>
+<title>Title of the page</title>
+<script class="original" src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/stylesheets/fontFaces.css" media="screen"  />
+<script class="original" type="text/javascript">
+ onload = function()
+ {
+  var NrOfButtons = $("#TabList").children().length;
+  var PercentSize = (100/NrOfButtons);    
+  $(".TabList_item").css("width", PercentSize+"%");
+ }
+</script>
+<style type="text/css">
+body
+{
+	margin:0;
+	padding:0;
+}
+
+#footer, #cssmenu span
+{
+	text-align:center;
+}
+#cssmenu, #cssmenu ul, #cssmenu ul li, #cssmenu ul li span{
+	padding: 0;
+	margin: 0;
+	line-height: 1;
+}
+
+#cssmenu:before, #cssmenu:after, #cssmenu > ul:before, #cssmenu > ul:after {
+	content: '';
+	display: table;
+}
+
+
+#cssmenu:after, #cssmenu > ul:after {
+	clear: both;
+}
+
+#cssmenu {
+	zoom:1;
+	height: 69px;
+	border-radius: 2px;
+}
+
+#cssmenu ul{
+	background-color: lightblue;
+	height: 69px;
+}
+
+#cssmenu ul li{
+	width: 20%;
+	float: left;
+	list-style: none;
+}
+
+#cssmenu ul li span{
+	display: block;
+	height: 37px;
+	padding: 22px 30px 0;
+	margin: 4px 2px 0;
+	border-radius: 2px 2px 0 0;
+	text-decoration: none;
+	font-size: 15px;
+	color: white;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, .75);
+	font-weight: 400;
+	opacity: .9;
+}
+
+#cssmenu ul li:first-child span{
+	margin: 4px 2px 0 0;
+}
+
+#cssmenu ul li span:hover, #cssmenu ul li.active span{
+	background: lightgrey center bottom;
+	display: block;
+	height: 37px;
+	margin-top: 0px;
+	padding-top: 26px;
+	color: #616161;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, .35);
+	opacity: 1;
+}
+
+a{
+		text-decoration: none;
+}
+#listOfLinks table{
+	display: inline;
+}
+
+#listOfLinks li{
+	text-align:left;
+	 list-style: none;
+	background-color:lightblue;
+	border: solid 3px white;
+}
+#listOfLinks li:hover
+{ 
+background-color:lightgrey !important;
+}
+</style>
+</head>
+<body>
+<div id="mainContainer">
+		<div id='cssmenu'>
+			<ul id="TabList" class="editable appendable">
+				<!--If we add a class active  class="active" to any of the list elements it will be flashing when the page will be loaded-->
+				<li id="TabListTab1" class="editable TabList_item">
+					<span id="TabListTab1_link" class="editable" href='#'>Tab1</span>
+				</li>
+				<li id="TabListTab2" class="editable TabList_item">
+					<span id="TabListTab2_link" class="editable" href='#'>Tab2</span>
+				</li>
+				<li id="TabListTab3" class="editable TabList_item">
+					<span id="TabListTab3_link" class="editable" href='#'>Tab3</span>
+				</li>
+				<li id="TabListTab4" class="editable TabList_item">
+					<span id="TabListTab4_link" class="editable" href='#'>Tab4</span>
+				</li>
+				<li id="TabListTab5" class="editable TabList_item">
+					<span id="TabListTab5_link" class="editable" href='#'>Tab5</span>
+				</li>
+			</ul>
+		</div>
+    <article>
+        <h1 class="editable" id="Heading1">Heading</h1>
+   	<section>
+  		<div id="listOfLinks"  class="editable appendable">
+  						<!--If we add a class active to any of the list elements it will be flashing when the page will be loaded-->
+						<li id="linkList1" class="editable listOfLinks_item" style="width: 100%;">
+							<table id="linkList1_Table">
+								<tr id="linkList1_tableRow">
+								<td id="linkList1_tableData">
+								<img id="linkList1_Image1" class="editable" src="/images/defaultImage.png" width="100" height="80">
+								</td>
+								<td id="linkList1_tableData2">
+								<h2 id="linkList1_Heading2" class="editable">Heading 2</h2>
+								<p id="linkList1_Paragraph1" class="editable">paragraph</p>
+								</td>
+								</tr>						
+							</table>
+						</li>
+						<li id="linkList2" class="editable listOfLinks_item" style="width: 100%;">
+							<table id="linkList2_Table">
+								<tr id="linkList2_tableRow">
+								<td id="linkList2_tableData">
+								<img id="linkList2_Image1" class="editable" src="/images/defaultImage.png" width="100" height="80">
+								</td>
+								<td id="linkList2_tableData2">
+								<h2 id="linkList2_Heading2" class="editable">Heading 2</h2>
+								<p id="linkList2_Paragraph1" class="editable">paragraph</p>
+								</td>
+								</tr>						
+							</table>
+						</li>	
+						<li id="linkList3" class="editable listOfLinks_item" style="width: 100%;">
+							<table id="linkList3_Table">
+								<tr id="linkList3_tableRow">
+								<td id="linkList3_tableData">
+								<img id="linkList3_Image1" class="editable" src="/images/defaultImage.png" width="100" height="80">
+								</td>
+								<td id="linkList3_tableData2">
+								<h2 id="linkList3_Heading2" class="editable">Heading 2</h2>
+								<p id="linkList3_Paragraph1" class="editable">paragraph</p>
+								</td>
+								</tr>						
+							</table>
+						</li>	
+						<li id="linkList4" class="editable listOfLinks_item" style="width: 100%;">
+							<span href="#" id="linkList4_Link1" class="editable">
+							<table id="linkList4_Table">
+								<tr id="linkList4_tableRow">
+								<td id="linkList4_tableData">
+								<img id="linkList4_Image1" class="editable" src="/images/defaultImage.png" width="100" height="80">
+								</td>
+								<td id="linkList4_tableData2">
+								<h2 id="linkList4_Heading2" class="editable">Heading 2</h2>
+								<p id="linkList4_Paragraph1" class="editable">paragraph</p>
+								</td>
+								</tr>						
+							</table>
+							</span>
+						</li>
+
+					
+					</div> 
+	</section>
+   </article>
+    <div id="footer">
+        <h4>&copy; 2012 Bait al Hikma</h4>
+    </div>
+</div>
+</body>

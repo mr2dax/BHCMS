@@ -1,0 +1,34 @@
+.editable {
+	margin: 2px;
+	padding: 4px;
+}
+html {
+	overflow-x: hidden;
+}
+body {
+	background-color: #E6E6FA;
+	color: #FFF;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+}
+h1 {
+	font-size: 1.5em;
+}
+h2 {
+	font-size: 1.25em;
+}
+p {
+	font-size: 0.9em;
+}
+button {
+	 font-weight: bold;
+	font-size: 0.7em;
+	background-color: white;
+	padding: 2px;
+	color: green;
+}
+li {
+	display: inline;
+}

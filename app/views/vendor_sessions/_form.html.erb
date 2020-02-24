@@ -1,0 +1,13 @@
+<%= form_tag vendor_sessions_path, :method => :post do %>
+  <div class="field">
+    <span class="login_username_label">BHCMSLABEL.login_username_label</span><br />
+    <%= text_field_tag :username %>
+  </div>
+  <div class="field">
+    <span class="login_pass_label">BHCMSLABEL.login_pass_label</span><br />
+    <%= password_field_tag :password %>
+  </div>
+  <div class="actions">
+    <button class="classname login_button" type="submit">Login </button>   
+  </div>
+<% end %>

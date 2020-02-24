@@ -1,0 +1,78 @@
+<%= form_for @vendor do |f| %>
+<% if @vendor.errors.any? %>
+	
+	<div id="error_explanation">
+	<h2><%= @vendor.errors.count %>
+	<span class="vendor_creation_error_label">BHCMSLABEL.vendor_creation_error_label</span></h2>
+	<ul>
+		<% @vendor.errors.full_messages.each do |msg| %>
+		<li>
+			<%= msg %>
+		</li>
+		<% end %>
+	</ul>
+</div>
+	
+	<% end %>
+
+
+<div class="depot_form">
+	
+	
+		<div>
+			<span class="vendor_vendorname_label">BHCMSLABEL.vendor_vendorname_label</span>
+			<br/>
+			<%= f.text_field :vendor_name, size: 40 %>
+		</div>
+		<div>
+			<span class="vendor_username_label">BHCMSLABEL.vendor_username_label</span>
+			<br/>
+			<%= f.text_field :username, size: 40 %>
+		</div>
+		<div>
+			<span class="vendor_password_label">BHCMSLABEL.vendor_password_label</span>
+			<br/>
+			
+			<%= f.password_field :password, size: 40 %>
+		</div>
+		<div>
+			<span class="vendor_passwordconf_label">BHCMSLABEL.vendor_passwordconf_label</span>
+			<br/>
+			
+			<%= f.password_field :password_confirmation, size: 40 %>
+		</div>
+		<div>
+			<span class="vendor_contactperson_label">BHCMSLABEL.vendor_contactperson_label</span>
+			<br/>
+			<%= f.text_field :contact_person, size: 40 %>
+		</div>
+		<div>
+			<span class="vendor_address_label">BHCMSLABEL.vendor_address_label</span>
+			<br/>
+			<%= f.text_field :address, size: 40 %>
+		</div>
+		<div>
+			<span class="vendor_email_label">BHCMSLABEL.vendor_email_label</span>
+			<br/>
+			<%= f.text_field :email, size: 40 %>
+		</div>
+		<div>
+			<span class="vendor_telephone_label">BHCMSLABEL.vendor_telephone_label</span>
+			<br/>
+			<%= f.text_field :telephone, size: 40 %>
+		</div>
+	<div>
+		<%= f.hidden_field :logo, size: 40, :value => "vendorlogos/logo.jpg" 
+		#"vendorlogos/"+@vendor.id.to_s+".jpg" 
+		%>
+	</div>
+	<div>
+		<span class="vendor_logo_label">BHCMSLABEL.vendor_logo_label</span>
+		<br/>
+		<%= f.file_field :vendor_logo %>
+	</div>
+	
+	 <button class="classname" ><span class="vendor_submit_label">BHCMSLABEL.vendor_submit_label</span></button>
+	
+	<% end %>
+</div>

@@ -1,0 +1,44 @@
+<% if session[:vendor_id] %>
+<% end %>
+
+<div id="newSite">
+<%= link_to "Add new site", { :controller => "sites", :action => "new" }, :class => 'classname Addnewsite_button' %>
+</div>
+<div id="Templates">
+<%= link_to "Manage Templates", { :controller => "templates", :action => "index" }, :class => 'classname Addnewtemp_button' %>
+</div>
+<div id="editVendor">
+<%= link_to "Edit account", { :controller => "vendors", :action => "edit" }, :class => 'classname Editvendor_button' %>
+</div>
+
+<h1><span class="admin_welcome_label">BHCMSLABEL.admin_welcome_label </span><%= @vendor.vendor_name %>!</h1><% current_user %>
+<br/>
+
+<table id="siteTable">
+	
+	<tr>
+	<th class="site_logo_label">BHCMSLABEL.site_logo_label</th>
+    <th class="site_name_label">BHCMSLABEL.site_name_label</th>
+    <th class="site_type_label">BHCMSLABEL.site_type_label</th>
+    <th class="site_lat_label">BHCMSLABEL.site_lat_label</th>
+    <th class="site_lon_label">BHCMSLABEL.site_lon_label</th>
+    <th class="site_desc_label">BHCMSLABEL.site_desc_label</th>
+    </tr>
+
+<% @sites.each do |site| %>
+  <tr>
+  	<td><img id="siteicon" src="<%= "/sitelogos/"+site.id.to_s+"."+site.logo %>"</img></td>
+    <td><%= site.site_name %></td>
+    <td><%= site.site_type %></td>
+    <td><%= site.latitude %></td>
+    <td><%= site.longitude %></td>
+    <td><%= site.description %></td>    
+    <td><%= link_to 'Manage', page_manage_path(site_id: site.id), :class => 'classname Sitemanage_button' %></td>
+    <td><%= link_to 'Edit', edit_site_path(site) , :class => 'classname Siteedit_button'%></td>
+    <td><%= link_to 'Destroy', site, confirm: 'Are you sure?', method: :delete , :class => 'classname Sitedestroy_button' %></td>
+  </tr>
+<% end %>
+</table>
+
+<img id="vendorLogo" src="<%= "/vendorlogos/"+@vendor.id.to_s+"."+@vendor.logo %>" ></img>
+</div>

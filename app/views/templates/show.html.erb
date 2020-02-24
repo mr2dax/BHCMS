@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b><span class="temp_desc_label">BHCMSLABEL.temp_desc_label</span></b>
+  <%= @template.description %>
+  </br><b><span class="temp_name_label">BHCMSLABEL.temp_name_label</span></b>
+  <%= @template.id.to_s + ".html" %>
+  </br></br><b><span class="temp_prev_label">BHCMSLABEL.temp_prev_label</span></b></br>
+  <iframe height="500px" width="300 px" src="<%= @template.file_path %>"></iframe>
+</p>
+
+
+<%= 
+# show edit only if user templates
+    		if @template.vendor_id != 0
+    			link_to 'Edit', edit_template_path(@template), :class => 'classname Edittemp_button'
+    		end %>
+<%= link_to 'Back', templates_path, :class => 'classname Back_button' %>

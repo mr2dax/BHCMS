@@ -1,0 +1,708 @@
+<% if session[:vendor_id] %>
+<% end %>
+
+	<head>
+		<link rel="stylesheet" href="/stylesheets/jquery-ui.css" />
+		<link rel="stylesheet" type="text/css" href="/stylesheets/pages.css" media="screen"  />
+		<link rel="stylesheet" type="text/css" href="/stylesheets/fontFaces.css" media="screen"  />
+		<script src="/javascripts/jquery_ui.js"></script>
+		<script src="/javascripts/pagesContent.js"></script>
+		<script src="/javascripts/pagesSetup.js"></script>
+		<script src="/javascripts/bhcmsLabel.js"></script>
+		<script src="/javascripts/bhcms.js"></script>
+		<script src="/javascripts/server_interaction.js"></script>
+        <script type="text/javascript" >
+        	localStorage.clear();
+           
+            //original screen size and height
+			var originalWidth	= 0;
+			var originalHeight	= 0;
+			//the id if the page which is currently selected
+			var currentPageId	= -1;
+			var landingPageId	= <%= @landingpage %>;
+			var firstRun		= true;
+			/** indexes of the tabs */
+			var TAB_SETUP	= 0;
+			var TAB_CONTENT = 1;
+			var TAB_GALLERY = 2;
+			/** variable storing the current tab index */
+			var currentTabIndex = TAB_SETUP;
+            // a boolean has map containing state of each page - if it has changes or not 
+            var pageChanges = {};
+          	//a boolean hash map containing state of each page - if it has loaded or not 
+           	var pageLoaded = {};
+            //a boolean hash map containing state of each template - if it has loaded or not 
+           	var templateLoaded = {};
+           	//a boolean checking if all templates have been loaded
+        	var allTemplatesLoaded = false;
+        	//a boolean checking if all pages have been loaded
+        	var allPagesLoaded = false;
+        	
+        	/**
+        	 * HTMLelement used to store the html source code of the preview frame 
+        	 * The innerHTML property of this object takes the new html code and the 
+        	 * outerHTML property (same but with <html> in the beginning/end) is used
+        	 * for assigning to the preview frame 
+        	 */
+        	var htmlObject = document.createElement('html');
+        	
+            window.onbeforeunload = function savingCheck()
+              {
+              	if(hasUnsavedChanges()){
+              	return "You have unsaved changes.";
+              	}
+              }            
+           
+            /**
+             * refreshes the main preview frame 
+             */
+			function refreshPreview(){
+				//it is possible that the current page is not loaded, eg if it is the default page but it's 
+				//preview in the bottom left is invisible
+				if (!pageLoaded[currentPageId]){
+					$.get("/sites/<%= @vendor.id %>/<%= @siteid %>/"+currentPageId+".html", function(htmlSource) {
+						pageLoaded[currentPageId] = true;
+						//save original state of that page to the local storage
+						localStorage.setItem('page'+currentPageId, htmlSource);
+						//if we are updating for the currently displayed view - get the source for management
+						//pass the source to the global variable for editing the preview source
+						htmlObject.innerHTML = htmlSource;
+						//set the view
+						mydoc = document.getElementById('preview_frame').contentWindow.document; 
+						mydoc.write(htmlObject.outerHTML); 
+						mydoc.close();
+					});
+				}
+				//clear the cache of the preview frame
+				document.getElementById('preview_frame').contentWindow.location.reload(true);
+				//set the view
+				mydoc = document.getElementById('preview_frame').contentWindow.document; 
+				mydoc.write(htmlObject.outerHTML); 
+				mydoc.close();
+				if (currentTabIndex == TAB_SETUP){
+					updateSetupTab();
+				}
+			}
+			
+			/**
+			 * save the changes made to the page source to the local storage, so it can be restored 
+			 */
+			function saveCurrentPageState(){
+				localStorage.setItem('page'+currentPageId,htmlObject.outerHTML);
+			}
+              
+			/**
+			 * @templateID - id of the of the template that will be displayed in the preview frame 
+			 * @frameID - id of the frame that contains the template - used for redLine function
+			 *confrimationFunction is called every time when a template is clicked and it 
+			 * checks if there are any changes done to the preview frame*/
+           function changeTemplate(templatePath,frameID) 
+   			{
+   				// //there are unsaved changes, warn the user he will loose them
+   				// if(hasUnsavedChanges())
+   				// {
+   					// var answer = confirm("You have unsaved changes are you sure you want to continue?");
+  					// if(answer == true)
+  					// {
+  						// assignTemplateToPreviewFrame(templatePath);
+   						// redLine(frameID);
+   					// }
+   				// }
+   				// else
+   				// {   					assignTemplateToPreviewFrame(templatePath);
+   					redLine(frameID);
+  				//}
+  				pageChanges[currentPageId]	= true;
+   			} 
+   			
+   			/**
+   			 * gets the source code of the template to the local storage and refreshes the preview frame 
+   			 */
+   			function assignTemplateToPreviewFrame(templatePath){
+   				$.get(templatePath, function(htmlSource) {
+   					//pass the source to the global variable for editing the preview source
+					htmlObject.innerHTML = htmlSource;
+					//save the code from the template to the local storage
+					localStorage.setItem('page'+currentPageId, htmlSource);
+					//write the source to the preview frame
+					refreshPreview();
+				});
+   			}             
+   				
+            /** initialize the tabs */
+			$(function() {
+				$("#right_div").tabs();
+			});
+
+			//variables to save the original aspect ratio of the preview frame
+			var iframeSizeRatio;
+			var firstRun = true;
+
+			/** adjust the height of the right pane and the preview frame */
+			function fixHeights() {
+				//save the original ratio height/width of the iframe (the phone image), so that in case
+				//it is resized - we can keep the ratio as original
+				if (firstRun) {
+
+					iframeSizeRatio = $("#preview_container").height() / $("#preview_container").width();
+					firstRun = false;
+				}
+
+				//resize the tabs in the right pane
+				desiredHeight = $("#container").height() - $("#tab_title").height()
+				$("#setup_tab").height(desiredHeight);
+				$("#content_tab").height(desiredHeight);
+				$("#gallery_tab").height(desiredHeight);
+
+				//resize the preview frame, by adjusting the height of the main container
+				$("#preview_container").height($("#top_right_side").height());
+				//adjusting the width based on the original size ratio
+				$("#preview_container").width($("#preview_container").height() / iframeSizeRatio);
+				//resiing the bacgkround to fill it
+				$("#preview_background_container").width($("#preview_container").width());
+			}
+
+//			/** sets the content of the iframe, accepts a link */
+//			function previewFunction(previewUrl) {
+//				//clear the cache for this frame
+//				document.getElementById("preview_frame").contentWindow.location.reload(true);
+//				//set the view
+//				document.getElementById("preview_frame").src = previewUrl;
+//			}
+			
+			/** refreshed the preview of the current page (the small page list item in the bottom left) */
+			function refreshPageListPreview() {
+				//clear the cache of the frame
+				document.getElementById("pageList"+currentPageId).contentWindow.location.reload(true);
+				assignSourceFromStorage("pageList"+currentPageId,currentPageId);
+			}
+
+			/** scales the iframe after it finishes loading the content */
+			function scaleTemplate(frameID) {
+				preview = document.getElementById(frameID).contentDocument.getElementsByTagName("body")[0];
+				/** get the scale factor and save it to a style string */
+				scale = (preview.clientWidth) / preview.scrollWidth;
+				style_properties = "zoom:" + scale + ";";
+				
+				//if this is page preview or a template preview - hide the scrollbars
+				if ((frameID.indexOf("tempList") > -1) || (frameID.indexOf("pageList") > -1)){
+					htmltag = document.getElementById(frameID).contentDocument.getElementsByTagName("html")[0];
+					if ( typeof htmltag.setAttribute === "function") {
+					$("#"+frameID).contents().find('html').css("overflow", "hidden");
+					$("#"+frameID).contents().find('body, a, button').css("font-size", 40 + "%");
+					//htmltag.setAttribute('style', "overflow: hidden;");
+					} 
+					//else if ( typeof htmltag.style.setAttribute === "object") {
+					//$("#"+frameID).contents().find('html').css("overflow", "hidden");
+					//htmltag.style.setAttribute('cssText', "overflow: hidden;");
+					//}
+				} 
+				
+				/** apply the style. according to w3c style.setAttribute should be used, but include a safe fail just in case */
+				if ( typeof preview.setAttribute === "function") {
+					$("#"+frameID).contents().find('body').css("zoom", scale);
+					//preview.setAttribute('style', style_properties);
+				}// else if ( typeof preview.style.setAttribute === "object") {
+				//	$("#"+frameID).contents().find('body').css("zoom", scale);
+				//	preview.style.setAttribute('cssText', style_properties);
+				//}
+			}
+					
+			/** gets the object that refers to the iframe, using its id */
+//			function getPreviewHTML(ifr_id) {
+//				//removes all the unnecesary scripts when page is saved
+//				$("#"+ifr_id).contents().find('script').not('.original').remove();
+//				// Apply the property "contentWindow" to myIFrame object
+//				var frameContentNotTrimmed = $("#"+ifr_id).contents().find('html').html();
+//				var frameContent = multilineTrim(frameContentNotTrimmed);
+//				return "<html>"+frameContent+"</html>";
+//			}
+			
+			// sets localstorage variable to the content of the preview_iframe
+			function savePageChangesToLocalStorage() {
+				// set frame content to HTML 5 localStorage variable
+				if(currentPageId != -1){
+					localStorage.setItem('page'+currentPageId, htmlObject.outerHTML);
+				}			
+			}
+			
+			// save the original html code of the preview frame to local storage
+			function restoreOriginalStateToStorage(pageId){
+				$.get("/sites/<%= @vendor.id %>/<%= @siteid %>/"+pageId+".html", function(htmlSource) {
+					//save original state of that page to the local storage
+					localStorage.setItem('page'+pageId, htmlSource);
+					//if we are updating for the currently displayed view - get the source for management
+					if (pageId == currentPageId) {
+						//pass the source to the global variable for editing the preview source
+						htmlObject.innerHTML = htmlSource;
+						document.getElementById("preview_frame").contentWindow.location.reload(true);
+						//write the source to the view
+						refreshPreview();
+					}
+					//update the page preview 
+					document.getElementById("pageList"+pageId).contentWindow.location.reload(true);
+					assignSourceFromStorage("pageList"+pageId,pageId);
+				});
+			}
+			
+			// set current page id that the user clicked on
+			function setCurrentPageId(pageid) {
+				currentPageId = pageid;
+				htmlObject.innerHTML = localStorage.getItem('page'+pageid);
+			}
+			// set current landing page id
+			function setLandingPageId(landingpage) {
+				landingPageId = landingpage;
+			}
+			
+			/** save the page to the server folder and refresh the preview*/ 
+			function savePage(){
+				//checks if the current page has any changes to save
+				if(pageChanges[currentPageId] == true){
+					var titleText = $("#titleInputTag").val();
+					savePageChangesToLocalStorage();
+					var trimmedContent = multilineTrim(localStorage.getItem('page'+currentPageId));
+					saveContentToServer(trimmedContent, <%= @vendor.id %>, <%= @siteid %>, currentPageId, titleText);
+					pageChanges[currentPageId] = false;
+				}
+				else
+				{
+					alert("This page has no changes to save.");
+				}
+			}
+			
+			/** checks if any of the pages has an unsaved change */
+			function hasUnsavedChanges(){
+				var changesFound = false;
+				for (var elem in pageChanges){
+					if (pageChanges[elem]){
+						changesFound = true;
+						break;
+					}
+				}
+				return changesFound;
+			}
+			
+			//Saves all pages to the server folder and refreshes the preview of all pages
+			function saveAllPages(){
+				//checks if there are any changes done to any pages	      
+				if (hasUnsavedChanges()){
+					//save any changes there are on the current page
+					savePageChangesToLocalStorage();
+					
+					//loops trough local storage elements 
+					for (i=0; i<=localStorage.length-1; i++)
+					{
+						key = localStorage.key(i);
+						var keyType = key.replace(/[0-9]/g, '');
+						var thisPageID = key.replace('page', '');
+						//checks if the type of the localStorage item is page and checks if each page has any changes
+						if( keyType == "page" && pageChanges[thisPageID] == true)
+						{
+							var thisFrameID = key.replace('page', 'pageList');
+							var trimmedContent = multilineTrim(localStorage.getItem(key));
+							//get the title from the element, it will be assigned as page name
+							var thisTitleText = getTitle(trimmedContent);
+							//sends data to saveAllPagesToServer function where it is saved to sites folder
+							saveAllPagesToServer(trimmedContent, <%= @vendor.id %>,<%= @siteid %>, thisPageID, thisTitleText);
+						}
+					}
+				}
+				else 
+				{
+					alert("Sorry there are no current changes to save.");
+				}
+			}
+			
+			//returns the title of an html document
+			function getTitle(htmlDocument){
+				var temphtmlObject = document.createElement('html');
+				temphtmlObject.innerHTML = htmlDocument;
+				return $(temphtmlObject).find("title").html();
+			}
+			
+			// set default (landing) page for site when user navigates to manage view
+			function setLandingPage(landingpage) {
+				// only call this on first load or if the last page was deleted
+					if (currentPageId == -1) {
+						// set page content to preview frame on first load of frame
+						if (landingpage != "") {
+							// set current page to default landing page
+							setCurrentPageId(landingpage);
+							refreshPreview();
+							setLandingPageId(landingpage);
+						}
+					}
+					setLandingPageId(landingpage);
+					if (landingpage == 0) {
+							setAsDefaultLandingPage(<%= @siteid %>, landingpage)
+						}
+					// put the "red" line over the landing page in pages div once landing page is loaded in preview frame
+					redLine('pageDiv'+currentPageId);
+			}
+			
+			// saves the current page in a hiadden field so it can be sent to the server with a download request
+			function saveCurrentPageID() {
+				var hiddenpage = document.getElementById('page_id');
+				hiddenpage.value = currentPageId;
+				return false;
+			}
+			
+			// get the local storage content for the page (current changes) and set it to an iframe
+			function assignSourceFromStorage(frameId, pageId){
+				//clear the cache for this frame
+				//document.getElementById("preview_frame").contentWindow.location.reload(true);
+				//set the view
+				mydoc = document.getElementById(frameId).contentWindow.document; 
+				mydoc.write(localStorage.getItem('page'+pageId)); 
+				mydoc.close();
+			}
+			
+			//refresh the content in the right tab if it is open
+			function refreshTab(){
+				if (currentTabIndex == TAB_CONTENT) {
+					$("#tab_content").click();
+				} else if (currentTabIndex == TAB_SETUP) {
+					$("#tab_setup").click();
+				}
+			}
+			
+			//update the title field, font-family selector and font-size range of the setup tab
+			function updateSetupTab(){
+				if ($(htmlObject).find("title").length != 0){
+					setSetupTitle(getTitle(htmlObject.outerHTML));
+				} else {
+					setSetupTitle("PAGE NAME");
+				}
+				setSetupFontStyle($(htmlObject).find('body').css("font-family"));
+				setSetupFontSize($(htmlObject).find('body').css("font-size"));
+			}
+			
+			/** assign new value to the variable storing the current tab index */
+			function changeTabIndex(newIndex){
+				currentTabIndex = newIndex;
+			}
+			
+			//Clears all changes to all pages saved in local storage
+			function clearChanges()
+			{
+				if(hasUnsavedChanges())
+				{
+					<% @pages.each do |page| %>
+					//checks if specific page has any changes if it has changes it in local storage
+					if(pageChanges[<%= page.id %>] == true)	{
+						restoreOriginalStateToStorage(<%= page.id %>);
+						pageChanges[<%= page.id %>] = false;
+					}
+					<% end %>
+				}
+				else
+				{
+					alert("There are no changes to clear.");
+				}
+			}
+			
+			//Clears changes for the currently selected page
+			function clearCurrentChanges()
+			{
+				//checks if the current page has any changes
+				if (pageChanges[currentPageId] == true){
+					restoreOriginalStateToStorage(currentPageId);
+					pageChanges[currentPageId]=false;
+				} else {
+					alert("This page has no changes to clear.");
+				}
+			}
+			
+			//function that checks if div containing template iframe is visible or not 
+			//loads the iframe whenever it is visible
+			function checkTempDiv()
+			{		
+					//Checks if all templates have ben loaded
+					if(!allTemplatesLoaded)
+					{
+						//containing div width
+						var tempContainerWidth = $("#templateList").width();
+						//scrollposition
+						var scrollLeftT = document.getElementById("templateList").scrollLeft;
+					 	<% @temp.each do |temp| %>
+					    if(templateLoaded[<%= temp.id %>] == false)
+					    {
+					    	var $elem = $("#tempCoverDiv<%= temp.id %>");
+					    	//checks current elements distance from left side of the parent element
+							var offsetLeft = $elem.position().left - $elem.closest('#templateList').position().left + scrollLeftT;
+							var visibleLeft = offsetLeft + $elem.width() >= scrollLeftT;
+			    			var visibleRight = offsetLeft <= scrollLeftT + tempContainerWidth;
+						    //checks if is visible
+						    if (visibleLeft && visibleRight) { 
+						    	document.getElementById("tempList<%= temp.id %>").contentWindow.location.reload(true);
+						    	document.getElementById("tempList<%= temp.id %>").src = "<%= temp.file_path %>";	
+							    templateLoaded[<%= temp.id %>] = true;
+					        }
+				        }
+				   		<% end %>
+				   		allTemplatesLoaded = true;
+				   		//checks if aal templates have been loaded to iframe
+				   		for(var tempLoaded in templateLoaded)
+				   		{
+				   			if(!templateLoaded[tempLoaded])
+				   			{
+				   				allTemplatesLoaded = false;
+				   				break;
+				   			}
+				   		}
+		  			} 		
+			}
+			
+			//function that checks if div containing page iframe is visible or not 
+			//loads the iframe whenever it is visible
+			function checkPageDiv()
+			{		
+					//Checks if all pages have ben loaded
+					if(!allPagesLoaded)
+					{
+						//containing div width
+						var pageContainerWidth = $("#page_select").width();
+						//scrollposition
+						var pageScroll = document.getElementById("page_select").scrollLeft;
+					 	<% @pages.each do |page| %>
+					    if(pageLoaded[<%= page.id %>] == false)
+					    {
+					    	var $elem = $("#pageCoverDiv<%= page.id %>");
+					    	//checks current elements distance from left side of the parent element
+							var pageOffset = $elem.position().left - $elem.closest('#page_select').position().left + pageScroll;
+							var visibleLeft = pageOffset + $elem.width() >= pageScroll;
+			    			var visibleRight = pageOffset <= pageScroll + pageContainerWidth;
+						    //checks if is visible
+						    if (visibleLeft && visibleRight)
+						    { 
+						    	document.getElementById("pageList<%= page.id %>").contentWindow.location.reload(true);
+						    	//save original state of that page to the local storage
+						    	restoreOriginalStateToStorage(<%= page.id %>);
+					    		//mark loaded
+						   		pageLoaded[<%= page.id %>] = true;
+					        }
+				        }
+				  		<% end %>
+				  		
+				   		//checks if all pages have been loaded to iframe
+				   		allPagesLoaded = true;
+				   		for(var pageLoad in pageLoaded)	{
+				   			if(!pageLoaded[pageLoad]) {
+				   				allPagesLoaded = false;
+				   				break;
+				   			}
+				   		}
+		  			} 		
+			}
+			//Function that loads the xml documents
+			function loadXMLDoc(dname)
+					{
+					if (window.XMLHttpRequest)
+					  {
+					  xhttp=new XMLHttpRequest();
+					  }
+					else
+					  {
+					  xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xhttp.open("GET",dname,false);
+					xhttp.send();
+					return xhttp.responseXML;
+			}
+			//function that appends font face options them in fontFamily selection tag
+			function printFaces()
+			{
+			xmlDoc=loadXMLDoc("/assets/font-faces.xml");
+			x=xmlDoc.getElementsByTagName('option');
+			//loops through all xml elements and appends them in fontFamily selection tag
+			for(var i=0;i<x.length;i++)
+					{
+					currentOption=xmlDoc.getElementsByTagName("option")[i];
+					y=currentOption.childNodes[0];
+					$("#fontFamily").append("<option value="+y.nodeValue+">"+y.nodeValue+"</option>");
+					}
+			}
+		</script>
+	</head>
+	<body style="margin: 0; padding: 0;" onload="fixHeights(); setLandingPage(<%= @landingpage %>); checkTempDiv(); checkPageDiv(); updateSetupTab(); printFaces()" onresize=" fixHeights(); firstRun = false;">
+
+		<div id="container"  style="width:100%; height:100%;">
+
+			<div id="left_div" style="background-color:white; float:left; height:100%; width:45%; position:absolute;">
+
+				<div id="top_left_side" style="background-color:white; width:20%; height:80%; float:left; z-index:3;">
+					
+					<button id="save_button" class="classname save_button" onClick="savePage()" style="width:100%;">
+						BHCMSLABEL.save_button
+					</button>
+					
+					<button id="saveAllPages_button" class="classname saveAllPages_button" onClick="saveAllPages(false); refreshTab()" style="width:100%;">
+						BHCMSLABEL.saveAllPages_button
+					</button>
+					
+					<button id="clearCurrentChanges_button" class="classname clearCurrentChanges_button" onClick="clearCurrentChanges()" style="width:100%;">
+						BHCMSLABEL.clearCurrentChanges_button
+					</button>
+					
+					<button id="clearAllChanges_button" class="classname clearAllChanges_button" onClick="clearChanges()" style="width:100%;">
+						BHCMSLABEL.clearAllChanges_button
+					</button>
+					
+					<button class="classname deletePage_button" onClick="deletePage(<%= @vendor.id %>, landingPageId , <%= @siteid %>, currentPageId)" style="width:100%;">
+						BHCMSLABEL.deletePage_button
+					</button>
+
+		<!--			<%= form_tag(export_page_path(vendor_id: @vendor.id, site_id: @siteid), {:method => "post", :onSubmit => "saveCurrentPageID()"}) do %>
+						<%= hidden_field_tag(:page_id, "") %> 
+						<button class="classname" style="width:100%;">
+							Download saved page
+						</button>
+					<% end %>		-->
+					
+					<%= form_tag(export_all_path(vendor_id: @vendor.id, site_id: @siteid), {:method => "post", :onSubmit => ""}) do %>
+						<%= hidden_field_tag(:page_id, "") %> <!-- page id -->
+						<button class="classname exportSite_button" style="width:100%;">
+							BHCMSLABEL.exportSite_button
+						</button>
+					<% end %>
+					
+					<button class="classname setDefaultPage_button" onClick="setAsDefaultLandingPage(<%= @siteid %>, currentPageId)" style="width:100%;">
+						BHCMSLABEL.setDefaultPage_button
+					</button>
+					
+					<!-- go back go the admin view, clear the local storage -->
+					<%= link_to "Admin view", admin_path, :class => 'classname adminView_button',  :onclick => "localStorage.clear();" %>
+					
+				</div>
+
+				<div id="top_right_side">
+					<div class="pdiv" id="preview_container">
+						<div class="pdiv" id="preview_background_container">
+							<img id="preview_background" src="/images/smartphone.png">
+							</img>
+						</div>
+						<iframe id="preview_frame" onload="scaleTemplate('preview_frame'); savePageChangesToLocalStorage();">
+						</iframe>
+					</div>
+				</div>
+
+				<div id="page_select" style="color:white; overflow:scroll; overflow-y: hidden;
+				background-color:#BBBBBB; height:20%;width:100%; position: absolute; bottom: 0;" onscroll="checkPageDiv()">
+					<table >
+						<tr id="pages_list">
+							<td> 
+								<%= link_to "Add page",  page_new_page_path(site_id: @siteid), :remote => true, :class => 'addPage' %> 
+							</td>
+							<% @pages.each do |page| %>
+							<td style="padding-right: 15px;" id="pageholder<%= page.id %>">
+								<div  id="pageCoverDiv<%= page.id %>" style="position: relative; display: inline-block;">
+									<iframe id="pageList<%= page.id %>" onload="scaleTemplate('pageList<%= page.id %>');" style="width:70px; height:100px; position:relative; border: 0;">
+									</iframe>
+									<div id="pageDiv<%= page.id %>" style="cursor:pointer; width:66px; height: 96px; z-index: 2; position: absolute; left: 0; top: 0;" onclick="redLine('pageDiv<%= page.id %>'); setCurrentPageId('<%= page.id %>'); saveCurrentPageState(); refreshPreview(); refreshTab();" >
+									</div>
+								</div>
+							</td>
+							<script type="text/javascript" >
+										pageLoaded[<%= page.id %>] = false;
+										//adds boolean elements to pageChanges array
+										pageChanges[<%= page.id %>] = false;
+							</script>
+							<% end %>
+						<tr>
+					</table>
+				</div>
+
+			</div>
+
+			<div id="right_div"  style="height:100%; width:55%; float:right;margin: 0; padding: 0; border: 0;z-index: 2; ">
+				<ul id ="tab_title" style="margin: 0; padding: 0; border: 0;">
+					<li>
+						<a id="tab_setup" class="tab_setup" href="#setup_tab" onclick="changeTabIndex(TAB_SETUP); updateSetupTab();">BHCMSLABEL.tab_setup</a>
+					</li>
+					<li>
+						<!-- passing vendor id, site id and resources array(resource id, resource description)  -->
+						<a id="tab_content" class="tab_content" href="#content_tab" onclick="changeTabIndex(TAB_CONTENT); setSiteData(<%= @vendor.id %>,<%= @siteid %> ); get_iframe();">BHCMSLABEL.tab_content</a>
+					</li>
+					<li>
+						<a id="tab_gallery" class="tab_gallery" href="#gallery_tab" onclick="changeTabIndex(TAB_GALLERY)">BHCMSLABEL.tab_gallery</a>
+					</li>
+				</ul>
+				<div  id="setup_tab" style=" background-color:#EEEEEE; height:100%; margin:0; padding:0; border:0;">
+					<span class="page_title_label">BHCMSLABEL.page_title_label</span>
+					<br/>
+					<div id="titleEditDiv" style="width:100%;" >
+						<input type="text" id="titleInputTag" onchange="setTitle(this.id)">
+					</div>
+					<span class="page_templates_label">BHCMSLABEL.page_templates_label</span>
+					<br/>
+					<!-- display all templates -->
+					<div id="templateList" style="width:100%; overflow:scroll; overflow-x: auto; overflow-y: hidden;" onscroll="checkTempDiv()">
+						<table>
+							<tr style="display: inline;">
+								<% @temp.each do |temp| %>
+								<td style="padding-right: 15px;">
+								<div id="tempCoverDiv<%= temp.id %>" style="position: relative;cursor:pointer;">
+									<iframe onload="scaleTemplate('tempList<%= temp.id %>')" width="70px" height="100px" id="tempList<%= temp.id %>" style="position: relative;border: 0;"   ></iframe>
+									<div id="tempDiv<%= temp.id %>" title="<%= temp.description %>" style="width:66px; height: 96px; z-index: 2; position: absolute; left: 0; top: 0;" onclick="changeTemplate('<%= temp.file_path %>','tempDiv<%= temp.id %>'); " ></div>
+								</div></td>
+								<script type="text/javascript">
+			    				templateLoaded[<%= temp.id %>] = false;
+			   					</script>
+								<% end %>
+							</tr>
+						</table>
+					</div>
+					<span class="color_scheme_label">BHCMSLABEL.color_scheme_label</span>
+					<br/>
+					<div id="colorStyles" style="width:100%; overflow:scroll; overflow-x: auto;overflow-y: hidden;">
+						<table>
+							<tr style="display: inline;">
+								<% @themes.each do |theme| %>
+								<td style="padding-right: 10px;">
+								<div id="config<%= theme.id %>" style="position:relative; cursor:pointer; width:100px; height:100px;left: 0; top: 0;" 
+									onclick="
+											changeColor(
+											'#<%= theme.bg_color %>',
+											'#<%= theme.main_text_color %>',
+											'#<%= theme.normal_text_color %>',
+											'#<%= theme.button_color %>');
+											redLine('config<%= theme.id %>');">
+									<table style="text-align: center;width: 100%; height: 100%;border-collapse:collapse;">
+										<tr style="height:50%;">
+											<td class="scheme_background" style="width: 50%; background-color: #<%= theme.bg_color %>;">BHCMSLABEL.scheme_background</td>
+											<td class="scheme_title" style="width: 50%; background-color: #<%= theme.main_text_color %>;">BHCMSLABEL.scheme_title</td>
+										</tr>
+										<tr style="height:50%;">
+											<td class="scheme_text" style="width: 50%; background-color: #<%= theme.normal_text_color %>;">BHCMSLABEL.scheme_text</td>
+											<td class="scheme_button" style="width: 50%; background-color: #<%= theme.button_color %>;">BHCMSLABEL.scheme_button</td>
+										</tr>
+									</table>
+								</div></td>
+								<% end %>
+							</tr>
+						</table>
+					</div>
+					<span class="font_label">Font</span>
+					<br/>
+					<div id="fontStyleDiv" style="width:100%;">
+						<span class="font_style_label">BHCMSLABEL.font_style_label</span>
+						<select id="fontFamily" onchange="changeFontFamily(this.id)">
+							
+						</select>
+						<span class="font_size_label">BHCMSLABEL.font_size_label</span>
+						<input style="width: 40%;" id="fontSize" onchange="changeFontFamily(this.id)" type="range" min="50" max="200" Value = "100">
+					</div>
+				</div>
+
+				<div id="content_tab" style="background-color:#EEEEEE; height:100%; margin:0; padding:0; border:0;overflow:scroll; overflow-x: hidden;overflow-y: auto;">
+				</div>
+
+			<!-- upload pictures gallery in an iframe -->
+			<div id="gallery_tab" style=" background-color:gray; height: 100%; margin: 0; padding: 0; border: 0;">
+				<iframe id="gallery" style="width:99%; height:99%; margin: 0; padding: 0; border: 1;" src="/uploads/index">
+				</iframe>
+			</div>
+		</div>
+		</div>
+	</body>

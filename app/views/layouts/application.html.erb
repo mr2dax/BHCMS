@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  	<script src="/javascripts/bhcmsLabel.js"></script>
+		<script src="/javascripts/bhcms.js"></script>
+    <title>BHCMS</title>
+      <%= stylesheet_link_tag    "application" %>
+      <%= javascript_include_tag "application" %>
+      <%= csrf_meta_tags %> <!-- TODO DO WE NEED THIS ? SOMETIMES IT PRODUCES 'WARNING: Can't verify CSRF token authenticity' -->
+      <script type="text/javascript" >
+       //set cookie by name and value
+            function setCookie(c_name,value){
+				var exdate=new Date();
+				exdate.setDate(exdate.getDate() + 356);
+				var c_value=escape(value); 
+				document.cookie=c_name + "=" + c_value;
+			}
+            
+            //get cookie by name
+            function getCookie(c_name){
+				var i,x,y,ARRcookies=document.cookie.split(";");
+				for (i=0;i<ARRcookies.length;i++)
+				{
+				  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+				  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+				  x=x.replace(/^\s+|\s+$/g,"");
+				  if (x==c_name){
+				    return unescape(y);
+				    }
+				  }
+			}
+			
+			//check if a language cookie is set
+			function checkLanguage(){
+				var language=getCookie(LANG_COOKIE);
+				if (language==null || language=="") {
+				  	return "base";
+				} else {
+					return language;
+				}
+			}
+            
+            /** change the language of the vie */
+            function changeLanguage (newLanguage){
+        		if (newLanguage){
+	            	BHCMS.init(newLanguage);
+	            	setCookie(LANG_COOKIE,newLanguage);
+	           } 
+           	}
+			
+			var LANG_COOKIE = "language_setting";
+			//initialize a language for the view
+			changeLanguage(checkLanguage());
+			</script>
+  </head>
+  <body>
+    
+  <div id="nav">
+  	<select onchange="changeLanguage(this.value)">
+    	<option value="">Select language:</option>
+		<option class="japanese" value="ja_JP">BHCMSLABEL.japanese</option>
+		<option class="english" value="base">BHCMSLABEL.english</option>
+	</select>
+  	&nbsp;&nbsp;&nbsp;
+    <% if current_user %>
+      <%= #link_to "Edit Profile", edit_vendor_path(current_user.id) 
+      %>
+      <%= link_to "Logout", :logout, :class => 'classname Navlogout_button' %>
+    <% else %>
+      <%= link_to "Register", new_vendor_path, :class => 'classname Navregister_button' %>
+    <% end %>
+  </div>
+
+  <%= yield %>
+  
+    <div align="bottom"><center>
+    <p id="notice"><%= notice %></p>
+    <p id="alert"><%= alert %></p>
+    </center>
+    </div>
+  
+  </body>
+</html>

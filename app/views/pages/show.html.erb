@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Site:</b>
+  <%= @page.site_id %>
+</p>
+
+<p>
+  <b>Template:</b>
+  <%= @page.template_id %>
+</p>
+
+<p>
+  <b>Page name:</b>
+  <%= @page.page_name %>
+</p>
+
+<p>
+  <b>Language:</b>
+  <%= @page.language %>
+</p>
+
+<p>
+  <b>Theme:</b>
+  <%= @page.theme_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_page_path(@page) %> |
+<%= link_to 'Back', pages_path %>

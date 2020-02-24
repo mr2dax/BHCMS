@@ -1,0 +1,52 @@
+<p id="notice"><%= notice %></p>
+
+<div id="sitelogo"><img src="<%= "/sitelogos/"+@site.id.to_s+"."+@site.logo %>" ></img></div>
+
+<p>
+  <b><span class="site_landingpage_label">BHCMSLABEL.site_landingpage_label</span></b>
+  <%= @site.landing_page_id %>
+</p>
+
+<p>
+  <b><span class="site_name_label">BHCMSLABEL.site_name_label</span></b>
+  <%= @site.site_name %>
+  <%= @test %>
+</p>
+
+<p>
+  <b><span class="site_type_label">BHCMSLABEL.site_type_label</span></b>
+  <%= @site.site_type %>
+</p>
+
+<p>
+  <b><span class="site_address_label">BHCMSLABEL.site_address_label</span></b>
+  <%= @site.address %>
+</p>
+
+<p>
+  <b><span class="site_telephone_label">BHCMSLABEL.site_telephone_label</span></b>
+  <%= @site.telephone %>
+</p>
+
+<p>
+  <b><span class="site_lat_label">BHCMSLABEL.site_lat_label</span></b>
+  <%= @site.latitude %>
+</p>
+
+<p>
+  <b><span class="site_lon_label">BHCMSLABEL.site_lon_label</span></b>
+  <%= @site.longitude %>
+</p>
+
+<p>
+  <b><span class="site_logo_label">BHCMSLABEL.site_logo_label</span></b>
+  <img id="siteicon" src="<%= "/sitelogos/"+@site.id.to_s+"."+@site.logo %>"></img>
+</p>
+
+<p>
+  <b><span class="site_desc_label">BHCMSLABEL.site_desc_label</span></b>
+  <%= @site.description %>
+</p>
+
+
+<%= link_to 'Back', admin_path , :class => 'classname Back_button'%>

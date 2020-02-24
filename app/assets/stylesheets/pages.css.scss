@@ -1,0 +1,50 @@
+body,html{
+  height:100%;
+}
+
+#container{
+  height:100%;
+}
+
+.addPage {
+  -moz-box-shadow: inset 0px 0px 0px 0px #ffffff;
+  -webkit-box-shadow: inset 0px 0px 0px 0px #ffffff;
+  box-shadow: inset 0px 0px 0px 0px #ffffff;
+  background-color: #ffffff;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  border: 1px solid #dcdcdc;
+  display: inline-block;
+  color: #666666;
+  font-family: arial;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 40px 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.addPage:hover {
+  background-color: #f6f6f6;
+}
+
+.addPage:active {
+  position: relative; 
+}
+
+.hr1{
+  border:0;
+  width: 95%;
+  color: #280E47;
+  background-color: #fff;
+  height: 3px;
+}
+
+.hr2{
+  border:0;
+  width: 95%;
+  color: #280E47;
+  background-color: #fff;
+  height: 1px;
+}

@@ -1,0 +1,35 @@
+<center><h1 class="respass_newpass_label">BHCMSLABEL.respass_newpass_label</h1>
+<%= form_for @vendor, :url => password_reset_path(@vendor), :html => {:method => :put} do |f| %>
+  <% if @vendor.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= @vendor.errors.count %>
+      	<span class="respass_creation_error_label">BHCMSLABEL.respass_creation_error_label</span></h2>
+      <ul>
+      <% @vendor.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+    
+  <div class="field">
+    <span class="respass_email_label">BHCMSLABEL.respass_email_label</span><br />
+    <%= @vendor.email %>
+  </div>
+  <div class="field">
+    <span class="respass_username_label">BHCMSLABEL.respass_username_label</span><br />
+    <%= @vendor.username %>
+  </div>
+  <div class="field">
+    <span class="respass_pass_label">BHCMSLABEL.respass_pass_label</span><br />
+    <%= f.password_field :password %>
+  </div>
+  <div class="field">
+    <span class="respass_pass2_label">BHCMSLABEL.respass_pass2_label</span><br />
+    <%= f.password_field :password_confirmation %>
+    <%= hidden_field_tag :token, @token %>
+  </div>
+  <div class="actions">
+    <button class="classname Respasssubmit_button" type="submit">Submit </button>   
+  </div>
+<% end %></center>

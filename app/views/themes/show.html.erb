@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Bg color:</b>
+  <%= @theme.bg_color %>
+</p>
+
+<p>
+  <b>Main text color:</b>
+  <%= @theme.main_text_color %>
+</p>
+
+<p>
+  <b>Normal text color:</b>
+  <%= @theme.normal_text_color %>
+</p>
+
+<p>
+  <b>Button color:</b>
+  <%= @theme.button_color %>
+</p>
+
+
+<%= link_to 'Edit', edit_theme_path(@theme) %> |
+<%= link_to 'Back', themes_path %>

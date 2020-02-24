@@ -1,0 +1,19 @@
+<!-- Partial for the pages list, rendered when a new page is created -->
+<td style="padding-right: 15px;" id="pageholder<%= page.id %>">
+	<div style="position:relative;	display:inline-block;">
+		<iframe id="pageList<%= page.id %>"
+			onload="scaleTemplate('pageList<%= page.id %>')"
+			style="width:70px; height:100px; position:relative; border:0;"
+			src="/sites/<%= vendor.id %>/<%= page.site_id %>/<%= page.id %>.html">
+		</iframe>
+		<div id="pageDiv<%= page.id %>"
+			style="cursor:pointer; width:66px; height:96px; z-index:2; position:absolute; left:0; top:0;"
+			onclick="
+				redLine('pageDiv<%= page.id %>'); 
+				setCurrentPageId('<%= page.id %>'); 
+				saveCurrentPageState(); 
+				refreshPreview(); 
+				refreshTab();" >
+		</div>
+	</div>
+</td>
